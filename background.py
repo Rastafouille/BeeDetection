@@ -5,7 +5,7 @@ import cv2
 
 cap = cv2.VideoCapture("2018-06-27-151434.webm")
 
-kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(10,10)) #structure ellipse de 3 par 3
+kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(5,5)) #structure ellipse de 3 par 3
 fgbg = cv2.bgsegm.createBackgroundSubtractorMOG() 
 
 while(1):
@@ -41,7 +41,7 @@ while(1):
     cv2.imshow('resized',resized)
     cv2.imshow('fgmask',fgmask)
 
-    k = cv2.waitKey(30) & 0xff
+    k = cv2.waitKey(100) & 0xff
     if k == 27:
         break
 

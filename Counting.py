@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 
 #https://www.pyimagesearch.com/2015/09/21/opencv-track-object-movement/
+#https://github.com/srianant/kalman_filter_multi_object_tracking
+
+#https://github.com/anandsinghkunwar/pedestrian-counter
+
 
 import numpy as np
 import cv2 as cv
