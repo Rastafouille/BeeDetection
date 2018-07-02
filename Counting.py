@@ -5,6 +5,93 @@
 import numpy as np
 import cv2 as cv
 
+class Detectors(object):
+
+    def __init__(self):
+
+        self.fgbg = cv.createBackgroundSubtractorMOG2()
+
+    def Detect(self, frame):
+        """Detect objects in video frame using following pipeline
+            - Convert captured frame from BGR to GRAY
+            - Perform Background Subtraction
+            - Detect edges using Canny Edge Detection
+              http://docs.opencv.org/trunk/da/d22/tutorial_py_canny.html
+            - Retain only edges within the threshold
+            - Find contours
+            - Find centroids for each valid contours
+        Args:
+            frame: single video frame
+        Return:
+            centers: vector of object centroids in a frame
+        """
+
+        # Convert BGR to GRAY
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+        if (debug == 1):
+            cv2.imshow('gray', gray)
+
+        # Perform Background Subtraction
+        fgmask = self.fgbg.apply(gray)
+
+        if (debug == 0):
+            cv2.imshow('bgsub', fgmask)
+
+        # Detect edges
+        edges = cv2.Canny(fgmask, 50, 190, 3)
+
+        if (debug == 1):
+            cv2.imshow('Edges', edges)
+
+        # Retain only edges within the threshold
+        ret, thresh = cv2.threshold(edges, 127, 255, 0)
+
+        # Find contours
+        _, contours, hierarchy = cv2.findContours(thresh,
+                                                  cv2.RETR_EXTERNAL,
+                                                  cv2.CHAIN_APPROX_SIMPLE)
+
+        if (debug == 0):
+            cv2.imshow('thresh', thresh)
+
+        centers = []  # vector of object centroids in a frame
+        # we only care about centroids with size of bug in this example
+        # recommended to be tunned based on expected object size for
+        # improved performance
+        blob_radius_thresh = 8
+        # Find centroid for each valid contours
+        for cnt in contours:
+            try:
+                # Calculate and draw circle
+                (x, y), radius = cv2.minEnclosingCircle(cnt)
+                centeroid = (int(x), int(y))
+                radius = int(radius)
+                if (radius > blob_radius_thresh):
+                    cv2.circle(frame, centeroid, radius, (0, 255, 0), 2)
+                    b = np.array([[x], [y]])
+                    centers.append(np.round(b))
+            except ZeroDivisionError:
+                pass
+
+        # show contours of tracking objects
+        # cv2.imshow('Track Bugs', frame)
+
+        return centers
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 camera = cv.VideoCapture("2018-06-27-151434.webm")
 #cv.namedWindow("1")        # Create a named window
 #cv.moveWindow("1", 0,0)  # Move it to (40,30)
@@ -19,7 +106,7 @@ if not ok:
     print('Failed to read video')
     exit()
 cropped=image[(image.shape[0]-1000):image.shape[0],0:image.shape[1]] 
-resized=cv.resize(cropped,((cropped.shape[1]/2),(cropped.shape[0]/2)),interpolation = cv.INTER_AREA)
+resized=cv.resize(cropped,(int((cropped.shape[1]/2)),int((cropped.shape[0]/2))),interpolation = cv.INTER_AREA)
 blank_image = np.zeros((resized.shape[0],resized.shape[1],3), np.uint8)
 gray = cv.cvtColor(resized, cv.COLOR_BGR2GRAY) 
 #gray = cv.GaussianBlur(gray, (21, 21), 0)
@@ -52,7 +139,7 @@ while camera.isOpened():
         print('Failed to read video')
         exit()
     cropped=image[(image.shape[0]-1000):image.shape[0],0:image.shape[1]] 
-    resized=cv.resize(cropped,((cropped.shape[1]/2),(cropped.shape[0]/2)),interpolation = cv.INTER_AREA)
+    resized=cv.resize(cropped,(int((cropped.shape[1]/2)),int((cropped.shape[0]/2))),interpolation = cv.INTER_AREA)
     gray = cv.cvtColor(resized, cv.COLOR_BGR2GRAY) 
     #gray = cv.GaussianBlur(gray, (21, 21), 0)
     #frameDelta = cv.subtract(firstFrame, gray)
@@ -93,7 +180,7 @@ while camera.isOpened():
     cv.imshow("dilate2", dilate2)
     #cv.imshow("dilate", dilate)
     #cv.imshow("blank", blank_image)    
-    k = cv.waitKey(10)
+    k = cv.waitKey(100)
     
     
     
