@@ -1,6 +1,7 @@
 # BeeDetection
 
-3 objectifs pour ce projet Python OpenCV !
+## Objectifs 
+
 A partir d'une vidéo déja réalisées ou en streaming de la zone d'entrée de la ruche :
 - compter les entrées/sorties d'abeilles,
 - compter les varroa sur les abeilles en vol pour en déduire un % d'infestation sans perturber la colonie
@@ -11,7 +12,9 @@ A partir d'une vidéo déja réalisées ou en streaming de la zone d'entrée de 
 
 ![Alt text](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNFnr8p8BPzZkSS-ff4QY-BbNaoRdQovqRTNWSwbAVOT2Cj0R-Ig)
 	
-Pour faire ca les fonctions principales sont :
+## Fonctions principales
+
+En Python 3 openCV
 	
 - la détection des abeilles en vol - ok
 
