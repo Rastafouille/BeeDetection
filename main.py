@@ -1,7 +1,7 @@
 
 import numpy as np
-import cv2
-from detectors import Detector1 Detector2
+import cv2 as cv
+from detectors import Detector1,Detector2
 from tracker import Tracker
 
 
@@ -9,34 +9,85 @@ from tracker import Tracker
 
 if __name__ == "__main__":
 
-    cap = cv2.VideoCapture("2018-06-27-151434.webm")
-    detector =1
-    
-    if detector==1:
-    	detector = Detector1()
-    	previous_frame=cap.read()[1] 
-    	previous_cropped=previous_frame[(previous_frame.shape[0]-1000):previous_frame.shape[0],0:previous_frame.shape[1]] 
+    cap = cv.VideoCapture("2018-06-27-151434.webm")
+    #Choix du type de detecteur
+    num_detector =1
+    #mode debug pour le détecteur 1, multi fenetre et reglage des paramètres
+    DEBUG=0
+    # Création de la fenetre de detection et prise 1ere image
+    cv.namedWindow("detection", cv.WINDOW_NORMAL)
+    ok, frame = cap.read()
+    if not ok:
+        print('Failed to read video')
+        exit()
+    # Select ROI
+    r = cv.selectROI("detection",frame)
+    # Crop image
+    cropped = frame[int(r[1]):int(r[1]+r[3]), int(r[0]):int(r[0]+r[2])]
+
+    # Create Object detector
+    if num_detector==1:
+        previous_frame=cropped
+        detector = Detector1(DEBUG)
     else :
-    	detector = Detector2()
-  
+        detector = Detector2()
+        
+    # Create Object Tracker
+    tracker = Tracker(160, 30, 5, 100)
+    cv.namedWindow("tracking", cv.WINDOW_NORMAL)
+    
+     # Variables initialization
+    skip_frame_count = 0
+    track_colors = [(255, 0, 0), (0, 255, 0), (0, 0, 255), (255, 255, 0),
+                    (0, 255, 255), (255, 0, 255), (255, 127, 255),
+                    (127, 0, 255), (127, 0, 127)]
     
     while(True):
-            # Capture frame-by-frame
-            frame = cap.read()[1]
-            cropped=frame[(frame.shape[0]-1000):frame.shape[0],0:frame.shape[1]] 
-            # Detect and return centeroids of the objects in the frame
-            if detector==1:
-            	centers = detector.Detect(cropped)
-            else :
-            	centers = detector.Detect(cropped,previous_cropped)
-            
-            resized=cv2.resize(cropped,(int((cropped.shape[1]/2)),int((cropped.shape[0]/2))),interpolation = cv2.INTER_AREA)
-            
-            previous_cropped=cropped  #pour detector2          
-            cv2.imshow('resized',resized)
-            k = cv2.waitKey(500) & 0xff
+        # Capture frame-by-frame
+        ok,frame = cap.read()
+        if not ok:
+            print('Failed to read video')
+            exit()
+        cropped=frame[int(r[1]):int(r[1]+r[3]), int(r[0]):int(r[0]+r[2])] 
+        # Detect and return centeroids of the objects in the frame
+        if num_detector==1:
+            centers,frame = detector.Detect(cropped,previous_frame)
+            previous_frame=cropped             
+        if num_detector==2:
+            centers,frame = detector.Detect(cropped)
+        cv.imshow("detection",frame)
+        #Exit if ESC pressed.
+        
+        # If centroids are detected then track them
+        if (len(centers) > 0):
+
+            # Track object using Kalman Filter
+            tracker.Update(centers)
+
+            # For identified object tracks draw tracking line
+            # Use various colors to indicate different track_id
+            for i in range(len(tracker.tracks)):
+                if (len(tracker.tracks[i].trace) > 1):
+                    for j in range(len(tracker.tracks[i].trace)-1):
+                        # Draw trace line
+                        x1 = tracker.tracks[i].trace[j][0][0]
+                        y1 = tracker.tracks[i].trace[j][1][0]
+                        x2 = tracker.tracks[i].trace[j+1][0][0]
+                        y2 = tracker.tracks[i].trace[j+1][1][0]
+                        clr = tracker.tracks[i].track_id % 9
+                        cv.line(frame, (int(x1), int(y1)), (int(x2), int(y2)),
+                                 track_colors[clr], 2)
+
+            # Display the resulting tracking frame
+            cv.imshow('tracking', frame)
+        
+
+        k = cv.waitKey(100);
+        if k == 27:
+            break;
+        
     cap.release()
-    cv2.destroyAllWindows()
+    cv.destroyAllWindows()
     
     
     
