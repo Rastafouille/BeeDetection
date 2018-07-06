@@ -1,5 +1,3 @@
-
-import numpy as np
 import cv2 as cv
 from detectors import Detector1,Detector2
 from tracker import Tracker
@@ -33,7 +31,8 @@ if __name__ == "__main__":
         detector = Detector2()
         
     # Create Object Tracker
-    tracker = Tracker(160, 30, 5, 100)
+    #(dist_thresh, max_frames_to_skip, max_trace_length,trackIdCount)
+    tracker = Tracker(300, 1, 5, 100)
     cv.namedWindow("tracking", cv.WINDOW_NORMAL)
     
      # Variables initialization
@@ -55,8 +54,9 @@ if __name__ == "__main__":
             previous_frame=cropped             
         if num_detector==2:
             centers,frame = detector.Detect(cropped)
-        cv.imshow("detection",frame)
-        #Exit if ESC pressed.
+        
+        #cv.imshow("detection",frame)
+        cv.destroyWindow("detection")
         
         # If centroids are detected then track them
         if (len(centers) > 0):
@@ -81,8 +81,8 @@ if __name__ == "__main__":
             # Display the resulting tracking frame
             cv.imshow('tracking', frame)
         
-
-        k = cv.waitKey(100);
+        #Exit if ESC pressed.
+        k = cv.waitKey(10000);
         if k == 27:
             break;
         
