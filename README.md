@@ -26,7 +26,7 @@ Aprés 1ere binarisation :
 
 <img src="images/2.png" width="500"/>
 
-Aprés suppresion du bruit de fond (gaussian, dilate) et soustraction de l'image précédente pour garder que ce qui est en mouvement :
+Aprés suppression du bruit de fond (gaussian, dilate) et soustraction de l'image précédente pour garder que ce qui est en mouvement :
 
 <img src="images/3.png" width="500"/>
 
