@@ -1,3 +1,8 @@
+
+#https://www.pyimagesearch.com/2015/09/21/opencv-track-object-movement/
+#https://github.com/srianant/kalman_filter_multi_object_tracking
+#https://github.com/anandsinghkunwar/pedestrian-counter
+
 import cv2 as cv
 from detectors import Detector1,Detector2
 from tracker import Tracker

@@ -47,3 +47,26 @@ Reprise du code sur : <https://github.com/srianant/kalman_filter_multi_object_tr
 - détection pollen
 
 - classification pollen
+
+
+
+## Installation dépendances pour Ubuntu 18.04
+
+`sudo apt-get update`
+
+`sudo apt-get upgrade`
+
+`sudo apt install python3`
+
+`sudo apt-get install build-essential cmake unzip pkg-config libjpeg-dev libpng-dev libtiff-dev libavcodec-dev libavformat-dev libswscale-dev libv4l-dev libxvidcore-dev libx264-dev libgtk-3-dev libatlas-base-dev gfortran`
+
+`sudo apt-get install python3-dev`
+
+`wget https://bootstrap.pypa.io/get-pip.py`
+
+`sudo python3 get-pip.py`
+
+`sudo pip install spyder opencv-python opencv-contrib-python`
+
+`python -m pip install --user numpy scipy matplotlib ipython jupyter pandas sympy nose`
+
