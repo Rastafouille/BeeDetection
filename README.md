@@ -31,6 +31,7 @@ Aprés suppresion du bruit de fond (gaussian, dilate) et soustraction de l'image
 <img src="images/3.png" width="500"/>
 
 Détection des contours :
+
 <img src="images/detect.png" width="500"/>
 
 - le tracking *- en cours*
