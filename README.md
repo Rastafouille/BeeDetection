@@ -18,7 +18,22 @@ En Python 3 openCV
 	
 - la détection des abeilles en vol *- ok*
 
+selection du ROI (Region Of Interest) :
+<img src="images/1-ROI.png" width="500"/>
+
+Aprés 1ere binarisation :
+<img src="images/2.png" width="500"/>
+
+Aprés suppresion du bruit de fond (gaussian, dilate) et soustraction de l'image précédente pour garder que ce qui est en mouvement :
+<img src="images/3.png" width="500"/>
+
+Détection des contours :
+<img src="images/4.png" width="500"/>
+
 - le tracking *- en cours*
+Reprise du code sur : <https://github.com/srianant/kalman_filter_multi_object_tracking>
+
+<img src="images/tracking.png" width="500"/>
 
 - l'identification
 

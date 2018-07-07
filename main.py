@@ -11,7 +11,7 @@ if __name__ == "__main__":
     #Choix du type de detecteur
     num_detector =1
     #mode debug pour le détecteur 1, multi fenetre et reglage des paramètres
-    DEBUG=0
+    DEBUG=1
     # Création de la fenetre de detection et prise 1ere image
     cv.namedWindow("detection", cv.WINDOW_NORMAL)
     ok, frame = cap.read()
@@ -55,8 +55,8 @@ if __name__ == "__main__":
         if num_detector==2:
             centers,frame = detector.Detect(cropped)
         
-        #cv.imshow("detection",frame)
-        cv.destroyWindow("detection")
+        cv.imshow("detection",frame)
+        #cv.destroyWindow("detection")
         
         # If centroids are detected then track them
         if (len(centers) > 0):
@@ -82,7 +82,7 @@ if __name__ == "__main__":
             cv.imshow('tracking', frame)
         
         #Exit if ESC pressed.
-        k = cv.waitKey(10000);
+        k = cv.waitKey(100000);
         if k == 27:
             break;
         
