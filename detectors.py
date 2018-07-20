@@ -51,11 +51,15 @@ class Detector1(object):
     
 #    contours_final=[]
         centers = []
+        rect = []
+
         for i in range(len(contours_new)):
 #        if cv.contourArea(contours_new[i])>10.0:
 #         #   if contours_new[i] in contours_old == True:
 #            contours_final.append(contours_new[i])
             x,y,w,h = cv.boundingRect(contours_new[i])
+            a=np.array([[x],[y],[w],[h]])
+            rect.append(np.round(a))
             frame_contours = cv.rectangle(frame_contours,(x,y),(x+w,y+h),(255,0,0),2)
             b = np.array([[x+h/2], [y+w/2]])
             centers.append(np.round(b))
@@ -69,7 +73,7 @@ class Detector1(object):
             cv.imshow("5dilate", dilate)
             cv.imshow("6final", final)
             cv.imshow("7dilate2", dilate2)
-        return (centers,frame_contours)   
+        return (centers,frame_contours,rect)   
     
 class Detector2(object):
     def __init__(self):

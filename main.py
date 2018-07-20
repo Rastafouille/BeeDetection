@@ -7,7 +7,6 @@ import cv2 as cv
 from detectors import Detector1,Detector2
 from tracker import Tracker
 
-
 ###### pas fonctionnel ######
 
 if __name__ == "__main__":
@@ -16,7 +15,7 @@ if __name__ == "__main__":
     #Choix du type de detecteur
     num_detector =1
     #mode debug pour le détecteur 1, multi fenetre et reglage des paramètres
-    DEBUG=1
+    DEBUG=0
     # Création de la fenetre de detection et prise 1ere image
     cv.namedWindow("detection", cv.WINDOW_NORMAL)
     ok, frame = cap.read()
@@ -55,8 +54,9 @@ if __name__ == "__main__":
         cropped=frame[int(r[1]):int(r[1]+r[3]), int(r[0]):int(r[0]+r[2])] 
         # Detect and return centeroids of the objects in the frame
         if num_detector==1:
-            centers,frame = detector.Detect(cropped,previous_frame)
-            previous_frame=cropped             
+            centers,frame,rect = detector.Detect(cropped,previous_frame)
+            previous_frame=cropped    
+            print (rect)
         if num_detector==2:
             centers,frame = detector.Detect(cropped)
         
@@ -71,7 +71,7 @@ if __name__ == "__main__":
 
             # For identified object tracks draw tracking line
             # Use various colors to indicate different track_id
-            for i in range(len(tracker.tracks)):
+            for i in range(len(tracker.tracks)):               
                 if (len(tracker.tracks[i].trace) > 1):
                     for j in range(len(tracker.tracks[i].trace)-1):
                         # Draw trace line
@@ -82,12 +82,13 @@ if __name__ == "__main__":
                         clr = tracker.tracks[i].track_id % 9
                         cv.line(frame, (int(x1), int(y1)), (int(x2), int(y2)),
                                  track_colors[clr], 2)
+                        #cv.imwrite(str(i)+'-'+str(j)+'.jpg',frame[int(y1-100):int(y1+100), int(x1-100):int(x1+100)])
 
             # Display the resulting tracking frame
             cv.imshow('tracking', frame)
         
         #Exit if ESC pressed.
-        k = cv.waitKey(100000);
+        k = cv.waitKey(30);
         if k == 27:
             break;
         
