@@ -151,6 +151,7 @@ class Tracker(object):
                               self.trackIdCount)
                 self.trackIdCount += 1
                 self.tracks.append(track)
+                print (self.trackIdCount)
 
         # Update KalmanFilter state, lastResults and tracks trace
         for i in range(len(assignment)):

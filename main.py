@@ -1,4 +1,3 @@
-
 #https://www.pyimagesearch.com/2015/09/21/opencv-track-object-movement/
 #https://github.com/srianant/kalman_filter_multi_object_tracking
 #https://github.com/anandsinghkunwar/pedestrian-counter
@@ -7,15 +6,17 @@ import cv2 as cv
 from detectors import Detector1,Detector2
 from tracker import Tracker
 
-###### pas fonctionnel ######
-
 if __name__ == "__main__":
 
-    cap = cv.VideoCapture("2018-06-27-151434.webm")
+    videopath="video/GOPR3332.MP4"
+    #videopath="video/2018-06-27-151434.webm"
+    cap = cv.VideoCapture(videopath)
+    #variable de mise en pause sur touche "p"
+    playVideo = True
     #Choix du type de detecteur
     num_detector =1
     #mode debug pour le détecteur 1, multi fenetre et reglage des paramètres
-    DEBUG=0
+    DEBUG=1
     # Création de la fenetre de detection et prise 1ere image
     cv.namedWindow("detection", cv.WINDOW_NORMAL)
     ok, frame = cap.read()
@@ -36,7 +37,7 @@ if __name__ == "__main__":
         
     # Create Object Tracker
     #(dist_thresh, max_frames_to_skip, max_trace_length,trackIdCount)
-    tracker = Tracker(300, 1, 5, 100)
+    tracker = Tracker(200, 1, 50, 1)
     cv.namedWindow("tracking", cv.WINDOW_NORMAL)
     
      # Variables initialization
@@ -46,51 +47,60 @@ if __name__ == "__main__":
                     (127, 0, 255), (127, 0, 127)]
     
     while(True):
-        # Capture frame-by-frame
-        ok,frame = cap.read()
-        if not ok:
-            print('Failed to read video')
-            exit()
-        cropped=frame[int(r[1]):int(r[1]+r[3]), int(r[0]):int(r[0]+r[2])] 
-        # Detect and return centeroids of the objects in the frame
-        if num_detector==1:
-            centers,frame,rect = detector.Detect(cropped,previous_frame)
-            previous_frame=cropped    
-            print (rect)
-        if num_detector==2:
-            centers,frame = detector.Detect(cropped)
-        
-        cv.imshow("detection",frame)
-        #cv.destroyWindow("detection")
-        
-        # If centroids are detected then track them
-        if (len(centers) > 0):
-
-            # Track object using Kalman Filter
-            tracker.Update(centers)
-
-            # For identified object tracks draw tracking line
-            # Use various colors to indicate different track_id
-            for i in range(len(tracker.tracks)):               
-                if (len(tracker.tracks[i].trace) > 1):
-                    for j in range(len(tracker.tracks[i].trace)-1):
-                        # Draw trace line
-                        x1 = tracker.tracks[i].trace[j][0][0]
-                        y1 = tracker.tracks[i].trace[j][1][0]
-                        x2 = tracker.tracks[i].trace[j+1][0][0]
-                        y2 = tracker.tracks[i].trace[j+1][1][0]
-                        clr = tracker.tracks[i].track_id % 9
-                        cv.line(frame, (int(x1), int(y1)), (int(x2), int(y2)),
-                                 track_colors[clr], 2)
-                        #cv.imwrite(str(i)+'-'+str(j)+'.jpg',frame[int(y1-100):int(y1+100), int(x1-100):int(x1+100)])
-
-            # Display the resulting tracking frame
-            cv.imshow('tracking', frame)
+       
+        if playVideo:
+            # Capture frame-by-frame
+            ok,frame = cap.read()
+            if not ok:
+                print('Failed to read video')
+                exit()
+            cropped=frame[int(r[1]):int(r[1]+r[3]), int(r[0]):int(r[0]+r[2])] 
+            # Detect and return centeroids of the objects in the frame
+            if num_detector==1:
+                centers,frame,rect = detector.Detect(cropped,previous_frame)
+                previous_frame=cropped    
+                #print (rect)
+            if num_detector==2:
+                centers,frame = detector.Detect(cropped)
+            
+            cv.imshow("detection",frame)
+            #cv.destroyWindow("detection")
+            
+            # If centroids are detected then track them
+            if (len(centers) > 0):
+    
+                # Track object using Kalman Filter
+                tracker.Update(centers)
+                print (len(tracker.tracks))
+                # For identified object tracks draw tracking line
+                # Use various colors to indicate different track_id
+                for i in range(len(tracker.tracks)):               
+                    if (len(tracker.tracks[i].trace) > 1):
+                        for j in range(len(tracker.tracks[i].trace)-1):
+                            # Draw trace line
+                            x1 = tracker.tracks[i].trace[j][0][0]
+                            y1 = tracker.tracks[i].trace[j][1][0]
+                            x2 = tracker.tracks[i].trace[j+1][0][0]
+                            y2 = tracker.tracks[i].trace[j+1][1][0]
+                            clr = tracker.tracks[i].track_id % 9
+                            cv.line(frame, (int(x1), int(y1)), (int(x2), int(y2)),
+                                     track_colors[clr], 2)
+                            #cv.imwrite(str(i)+'-'+str(j)+'.jpg',frame[int(y1-100):int(y1+100), int(x1-100):int(x1+100)])
+    
+                # Display the resulting tracking frame
+                cv.imshow('tracking', frame)
+            else:
+                cv.imshow('tracking', frame)
+                    
         
         #Exit if ESC pressed.
-        k = cv.waitKey(30);
-        if k == 27:
-            break;
+        k = cv.waitKey(50);
+        if k == 27: #ascii ESC
+            break
+        if k == 112: #ascii p
+            playVideo = not playVideo
+        if k == 115: #ascii s
+            detector.SaveParam(videopath,'ParamSave.txt')
         
     cap.release()
     cv.destroyAllWindows()

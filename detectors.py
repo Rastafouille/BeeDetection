@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import cv2 as cv
+import json
+import datetime
 
 def nothing(x):
     pass
@@ -24,11 +26,13 @@ class Detector1(object):
         print('Press ESC to exit cleanly')
       
 
-    def Detect(self, frame, previous_frame):
-        previous_gray = cv.cvtColor(previous_frame, cv.COLOR_BGR2GRAY)
+    def Detect(self, currentframe, previousframe):
+        current=np.copy(currentframe)
+        previous=np.copy(previousframe)
+        previous_gray = cv.cvtColor(previous, cv.COLOR_BGR2GRAY)
         if self.DEBUG :
             previous_binary = cv.threshold(previous_gray,cv.getTrackbarPos("binary1", "2binary"),255,cv.THRESH_BINARY_INV)[1]
-            gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY) 
+            gray = cv.cvtColor(current, cv.COLOR_BGR2GRAY) 
             binary = cv.threshold(gray,cv.getTrackbarPos("binary1", "2binary"),255,cv.THRESH_BINARY)[1]
             addition=cv.threshold(binary+previous_binary,127,255,cv.THRESH_BINARY_INV)[1]    
             gaussian = cv.GaussianBlur(addition, (21,21), 0)
@@ -37,7 +41,7 @@ class Detector1(object):
             dilate2 = cv.dilate(final, None, iterations=cv.getTrackbarPos("dilate iteration 2", "7dilate2"))
         else :
             previous_binary = cv.threshold(previous_gray,65,255,cv.THRESH_BINARY_INV)[1]
-            gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY) 
+            gray = cv.cvtColor(current, cv.COLOR_BGR2GRAY) 
             binary = cv.threshold(gray,65,255,cv.THRESH_BINARY)[1]
             addition=cv.threshold(binary+previous_binary,127,255,cv.THRESH_BINARY_INV)[1]    
             gaussian = cv.GaussianBlur(addition, (21,21), 0)
@@ -46,7 +50,7 @@ class Detector1(object):
             dilate2 = cv.dilate(final, None, iterations=8)
         
         img_contour, contours_new, hierarchy = cv.findContours(dilate2,cv.RETR_TREE,cv.CHAIN_APPROX_SIMPLE)
-        frame_contours=frame
+        frame_contours=current
         cv.drawContours(frame_contours, contours_new, -1, (0,0,255), 2)
     
 #    contours_final=[]
@@ -75,18 +79,28 @@ class Detector1(object):
             cv.imshow("7dilate2", dilate2)
         return (centers,frame_contours,rect)   
     
+    def SaveParam(self,videopath,filename):
+        param = json.dumps([videopath,str(datetime.datetime.now()),cv.getTrackbarPos("binary1", "2binary"),
+                            cv.getTrackbarPos("dilate iteration", "5dilate"),
+                            cv.getTrackbarPos("binary final", "6final"),
+                            cv.getTrackbarPos("dilate iteration 2", "7dilate2")])
+        f = open(filename,'a+')
+        f.write(param+"\n")
+        f.close
+        return
+    
 class Detector2(object):
     def __init__(self):
         self.kernel = cv.getStructuringElement(cv.MORPH_ELLIPSE,(20,20)) #structure ellipse de 3 par 3
         self.fgbg = cv.createBackgroundSubtractorMOG2()
         self.blob_radius_thresh = 10
 
-    def Detect(self, frame):
+    def Detect(self, current):
         #cropped=frame[(frame.shape[0]-1000):frame.shape[0],0:frame.shape[1]] 
-        fgmask = self.fgbg.apply(frame)
+        fgmask = self.fgbg.apply(current)
         fgmask = cv.morphologyEx(fgmask, cv.MORPH_OPEN, self.kernel)
         img_contour, contours, hierarchy = cv.findContours(fgmask,cv.RETR_TREE,cv.CHAIN_APPROX_SIMPLE)    
-        frame_contours=frame
+        frame_contours=current
         cv.drawContours(frame_contours, contours, -1, (0,0,255), 2)
         
 
@@ -110,3 +124,11 @@ class Detector2(object):
     
     
     
+    
+    
+        
+
+            
+            
+
+        
