@@ -12,12 +12,13 @@ Created on Tue Oct 22 15:06:30 2019
 import cv2 as cv
 from detectors import Detector1,Detector2
 from Api import Bee,Hive
-from tracker import Tracker
+from tracker2 import Tracker
 import numpy as np
 
 if __name__ == "__main__":
 
     MyHive=Hive()
+
     #videopath="video/GOPR3332.MP4"
     #videoname="GOPR3332"
     videopath="video/2018-06-27-151434.webm"
@@ -25,6 +26,8 @@ if __name__ == "__main__":
     
     beesimgpath='BeesImages/'+videoname+'/'
     paramsavepath='video/'+videoname+'.txt'
+    
+        
     cap = cv.VideoCapture(videopath)
     #variable de mise en pause sur touche "p"
     playVideo = True
@@ -46,20 +49,20 @@ if __name__ == "__main__":
     # Create Object detector
     if num_detector==1:
         previous_frame=cropped
-        detector = Detector1(DEBUG)
+        MyDetector = Detector1(65,15,150,8,DEBUG)
     else :
-        detector = Detector2()
+        MyDetector = Detector2()
         
     # Create Object Tracker
     #(dist_thresh, max_frames_to_skip, max_trace_length,trackIdCount)
-    #T tracker = Tracker(200, 1, 50, 1)
-    #T cv.namedWindow("tracking", cv.WINDOW_NORMAL)
+    MyTracker = Tracker(200, 1, 50, 1)
+    cv.namedWindow("tracking", cv.WINDOW_NORMAL)
     
      # Variables initialization
-    #T skip_frame_count = 0
-#    #T track_colors = [(255, 0, 0), (0, 255, 0), (0, 0, 255), (255, 255, 0),
-#                    (0, 255, 255), (255, 0, 255), (255, 127, 255),
-#                    (127, 0, 255), (127, 0, 127)]
+    skip_frame_count = 0
+    track_colors = [(255, 0, 0), (0, 255, 0), (0, 0, 255), (255, 255, 0),
+                    (0, 255, 255), (255, 0, 255), (255, 127, 255),
+                    (127, 0, 255), (127, 0, 127)]
     
 
     while(True):
@@ -70,61 +73,66 @@ if __name__ == "__main__":
             if not ok:
                 print('Failed to read video')
                 break
+            centers = []
+            imgs = []
             cropped=np.copy(frame[int(r[1]):int(r[1]+r[3]), int(r[0]):int(r[0]+r[2])] )
             # Detect and return centeroids of the objects in the frame
             if num_detector==1:
-                centers,frame2,rect = detector.Detect(cropped,previous_frame)
+                centers,frame2,rect = MyDetector.detect(cropped,previous_frame)
                 #cv.imshow("bee", cropped)
                 previous_frame=cropped    
                 for i in range(len(centers)):
-                    newbee=Bee(cropped[int(rect[i][1]):int(rect[i][1]+rect[i][3]),int(rect[i][0]):int(rect[i][0]+rect[i][2])],centers[i])
-                    MyHive.AddBee(newbee)
+                    imgs.append(cropped[int(rect[i][1]):int(rect[i][1]+rect[i][3]),int(rect[i][0]):int(rect[i][0]+rect[i][2])])
+                    
+                    #NewBee=Bee(imgs[i],centers[i])
+                    #MyHive.add_bee(NewBee)
+                    
             if num_detector==2:
-                centers,frame2 = detector.Detect(cropped)
+                centers,frame2 = MyDetector.detect(cropped)
             
             cv.imshow("detection",frame2)
             #cv.destroyWindow("detection")
             
             # If centroids are detected then track them
-#T            if (len(centers) > 0):
-#    
-#                # Track object using Kalman Filtser
-#                tracker.Update(centers)
-#                print (len(tracker.tracks))
-#                # For identified object tracks draw tracking line
-#                # Use various colors to indicate different track_id
-#                for i in range(len(tracker.tracks)):               
-#                    if (len(tracker.tracks[i].trace) > 1):
-#                        for j in range(len(tracker.tracks[i].trace)-1):
-#                            # Draw trace line
-#                            x1 = tracker.tracks[i].trace[j][0][0]
-#                            y1 = tracker.tracks[i].trace[j][1][0]
-#                            x2 = tracker.tracks[i].trace[j+1][0][0]
-#                            y2 = tracker.tracks[i].trace[j+1][1][0]
-#                            clr = tracker.tracks[i].track_id % 9
-#                            cv.line(frame, (int(x1), int(y1)), (int(x2), int(y2)),
-#                                     track_colors[clr], 2)
-#                            #cv.imwrite(str(i)+'-'+str(j)+'.jpg',frame[int(y1-100):int(y1+100), int(x1-100):int(x1+100)])
-#    
-#                # Display the resulting tracking frame
-#                cv.imshow('tracking', frame)
-#            else:
-# T               cv.imshow('tracking', frame)
+            if (len(centers) > 0):
+    
+                # Track object using Kalman Filtser
+                MyTracker.update(centers,imgs,MyHive)
+                #print (len(MyTracker.tracks))
+                # For identified object tracks draw tracking line
+                # Use various colors to indicate different track_id
+                for i in range(len(MyTracker.tracks)):               
+                    if (len(MyTracker.tracks[i].center_trace) > 1):
+                        for j in range(len(MyTracker.tracks[i].center_trace)-1):
+                            # Draw trace line
+                            x1 = MyTracker.tracks[i].center_trace[j][0][0]
+                            y1 = MyTracker.tracks[i].center_trace[j][1][0]
+                            x2 = MyTracker.tracks[i].center_trace[j+1][0][0]
+                            y2 = MyTracker.tracks[i].center_trace[j+1][1][0]
+                            clr = MyTracker.tracks[i].track_id % 9
+                            cv.line(frame2, (int(x1), int(y1)), (int(x2), int(y2)),
+                                     track_colors[clr], 2)
+                            #cv.imwrite(str(i)+'-'+str(j)+'.jpg',frame[int(y1-100):int(y1+100), int(x1-100):int(x1+100)])
+    
+                # Display the resulting tracking frame
+                cv.imshow('tracking', frame2)
+            else:
+                cv.imshow('tracking', frame2)
                     
              
         k = cv.waitKey(50);
         if k == 27: #ascii ESC
             print (len(MyHive.bees))
-            MyHive.Save(beesimgpath)
+            MyHive.save(beesimgpath)
             break
         if k == 112: #ascii p
             playVideo = not playVideo
         if k == 115: #ascii s
-            detector.SaveParam(videopath,paramsavepath)
+            MyDetector.save_param(videopath,paramsavepath)
             print('param well saved')
         
     print (len(MyHive.bees))
-    MyHive.Save(beesimgpath)
+    MyHive.save(beesimgpath)
     cap.release()
     cv.destroyAllWindows()
     
