@@ -1,0 +1,32 @@
+The Application of Convolutional Neural Network for Pollen Bearing Bee Classification
+https://ieeexplore.ieee.org/abstract/document/8592464
+https://www.researchgate.net/publication/330027185_The_Application_of_Convolutional_Neural_Network_for_Pollen_Bearing_Bee_Classification
+
+A computer vision system to monitor the infestation level of Varroa destructor in a honeybee colony
+https://www.sciencedirect.com/science/article/pii/S0168169918310329?via%3Dihub
+https://www.researchgate.net/publication/334587446_A_computer_vision_system_to_monitor_the_infestation_level_of_Varroa_destructor_in_a_honeybee_colony?_sg=MEu6KyR7YIe6DPGwa-PNvkEqQTJuSKXOwlh-phQDreAC0zOcMIRwffBbhJriic3MWHDTAtgrQPFqyg.HYfCf2FEfEPzmofwd-GaZoxIjwaKgU35pwifwe7IwR_6h8PbHGA5G_DU2Qc2VxRPIHrTjMzNP1_XJ856-cxJ3w&_sgd%5Bnc%5D=1&_sgd%5Bncwor%5D=0
+
+Improvement of Honey Bee Tracking on 2D Video with Hough Transform and Kalman Filter
+Pdf
+
+A Model for Pollen Measurement Using Video Monitoring of Honey Bees
+Pdf
+
+Honeybee Detection and Pose Estimation using Convolutional Neural Networks
+Pdf
+
+Bee hive traffic monitoring by tracking bee flight paths
+https://www.researchgate.net/publication/329583754_Bee_hive_traffic_monitoring_by_tracking_bee_flight_paths
+
+Multiple honey bees tracking and trajectory modeling
+https://www.researchgate.net/publication/333938819_Multiple_honey_bees_tracking_and_trajectory_modeling
+
+Automatic Video Monitoring of Honeybee Foraging Behavior using Convolutional Neural Networks
+https://www.researchgate.net/publication/333516632_Automatic_Video_Monitoring_of_Honeybee_Foraging_Behavior_using_Convolutional_Neural_Networks
+
+Application of neural networks for honey bee colony state identification
+https://www.researchgate.net/publication/304665769_Application_of_neural_networks_for_honey_bee_colony_state_identification/citations
+
+Recognition ofPollen-bearing Bees from Video using ConvolutionalNeuralNetwork
+Pdf
+
