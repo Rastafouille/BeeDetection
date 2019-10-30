@@ -11,24 +11,23 @@ from kalman_filter import KalmanFilter
 import cv2 as cv
 
 class Bee(object):
-    def __init__(self,firstframe,firstcenter):
-        self.frame =[]
-        self.frame[0] =firstframe
-        #self.frame.append(firstframe)
-        self.center =[]
-        self.center[0]=firstcenter
-        #self.center.append(firstcenter)
+    def __init__(self,firstcenter,firstframe):
+        self.frame=[]
+        self.center=[]
+        self.frame.append(np.copy(firstframe))
+        self.center.append(np.copy(firstcenter))
         self.pollen = 0
         self.varroa= -1 #0=absent, 1=present, -1=unknow
-        self.len=1
+        
     def varroa_detect(self):
         return
+    
     def pollen_detect(self):
         return
+    
     def add_capture(self,newcenter,newframe):
-        self.frame[self.len+1]=newframe
-        self.center[self.len+1]=newcenter
-        self.len+=1
+        self.frame.append(np.copy(newframe))
+        self.center.append(np.copy(newcenter))
         return
         
         
@@ -54,6 +53,6 @@ class Hive(object):
                 
         for i in range(len(self.bees)):
             for j in range(len(self.bees[i].frame)):
-                cv2.imwrite(repertoire+str(i+1)+"_"+str(j+1)+".png", np.array(self.bees[i].frame[j]));
+                cv2.imwrite(repertoire+str(i+1)+"_"+str(j+1)+".png", self.bees[i].frame[j]);
         
         return

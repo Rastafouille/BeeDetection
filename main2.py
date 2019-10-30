@@ -21,10 +21,10 @@ if __name__ == "__main__":
 
     #videopath="video/GOPR3332.MP4"
     #videoname="GOPR3332"
-    videopath="video/2018-06-27-151434.webm"
-    videoname="2018-06-27-151434"
+    videopath="../BeeDetectionData/video/GOPR3330.MP4"
+    videoname="GOPR3330"
     
-    beesimgpath='BeesImages/'+videoname+'/'
+    beesimgpath='../BeeDetectionData/BeesImages/'+videoname+'/'
     paramsavepath='video/'+videoname+'.txt'
     
         
@@ -49,7 +49,7 @@ if __name__ == "__main__":
     # Create Object detector
     if num_detector==1:
         previous_frame=cropped
-        MyDetector = Detector1(65,15,150,8,DEBUG)
+        MyDetector = Detector1(82,2,90,8,DEBUG)
     else :
         MyDetector = Detector2()
         
@@ -63,7 +63,6 @@ if __name__ == "__main__":
     track_colors = [(255, 0, 0), (0, 255, 0), (0, 0, 255), (255, 255, 0),
                     (0, 255, 255), (255, 0, 255), (255, 127, 255),
                     (127, 0, 255), (127, 0, 127)]
-    
 
     while(True):
        
@@ -75,17 +74,16 @@ if __name__ == "__main__":
                 break
             centers = []
             imgs = []
+            rect = []
             cropped=np.copy(frame[int(r[1]):int(r[1]+r[3]), int(r[0]):int(r[0]+r[2])] )
             # Detect and return centeroids of the objects in the frame
             if num_detector==1:
                 centers,frame2,rect = MyDetector.detect(cropped,previous_frame)
                 #cv.imshow("bee", cropped)
-                previous_frame=cropped    
+                previous_frame=np.copy(cropped)    
                 for i in range(len(centers)):
                     imgs.append(cropped[int(rect[i][1]):int(rect[i][1]+rect[i][3]),int(rect[i][0]):int(rect[i][0]+rect[i][2])])
-                    
-                    #NewBee=Bee(imgs[i],centers[i])
-                    #MyHive.add_bee(NewBee)
+                                        
                     
             if num_detector==2:
                 centers,frame2 = MyDetector.detect(cropped)
@@ -102,13 +100,13 @@ if __name__ == "__main__":
                 # For identified object tracks draw tracking line
                 # Use various colors to indicate different track_id
                 for i in range(len(MyTracker.tracks)):               
-                    if (len(MyTracker.tracks[i].center_trace) > 1):
-                        for j in range(len(MyTracker.tracks[i].center_trace)-1):
+                    if (len(MyTracker.tracks[i].NewBee.center) > 1):
+                        for j in range(len(MyTracker.tracks[i].NewBee.center)-1):
                             # Draw trace line
-                            x1 = MyTracker.tracks[i].center_trace[j][0][0]
-                            y1 = MyTracker.tracks[i].center_trace[j][1][0]
-                            x2 = MyTracker.tracks[i].center_trace[j+1][0][0]
-                            y2 = MyTracker.tracks[i].center_trace[j+1][1][0]
+                            x1 = MyTracker.tracks[i].NewBee.center[j][0][0]
+                            y1 = MyTracker.tracks[i].NewBee.center[j][1][0]
+                            x2 = MyTracker.tracks[i].NewBee.center[j+1][0][0]
+                            y2 = MyTracker.tracks[i].NewBee.center[j+1][1][0]
                             clr = MyTracker.tracks[i].track_id % 9
                             cv.line(frame2, (int(x1), int(y1)), (int(x2), int(y2)),
                                      track_colors[clr], 2)
@@ -117,6 +115,8 @@ if __name__ == "__main__":
                 # Display the resulting tracking frame
                 cv.imshow('tracking', frame2)
             else:
+                for i in range(len(MyTracker.tracks)):
+                    MyTracker.tracks[i].skipped_frames += 1
                 cv.imshow('tracking', frame2)
                     
              

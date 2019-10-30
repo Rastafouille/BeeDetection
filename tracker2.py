@@ -38,11 +38,13 @@ class Track(object):
         """
         self.track_id = trackIdCount  # identification of each track object
         self.KF = KalmanFilter()  # KF instance to track this object
-        self.prediction = np.asarray(prediction)  # predicted centroids (x,y)
+        self.prediction = prediction  # predicted centroids (x,y)
         self.skipped_frames = 0  # number of frames skipped undetected
-        self.center_trace = [] # trace path
-        self.img_trace =[] 
+        #self.center_trace = list() # trace path
+        #self.img_trace =list() 
         self.img=img
+        self.NewBee=Bee(self.prediction, self.img)
+        self.first=1
 
 
 class Tracker(object):
@@ -127,16 +129,16 @@ class Tracker(object):
         for i in range(len(assignment)):
             if (assignment[i] != -1):
                 # check for cost distance threshold.
-                # If cost is very high then un_assign (delete) the track and save bee in the hive
+                # If cost is very high then un_assign (delete) the track 
                 if (cost[i][assignment[i]] > self.dist_thresh):
                     assignment[i] = -1
                     un_assigned_tracks.append(i)
                     
-                    NewBee=Bee(self.tracks[i].center_trace[0],self.tracks[i].img_trace[0])
-                    if len (self.tracks[i].center_trace)>0:
-                        for j in range(len(self.tracks[i].center_trace)):
-                            NewBee.add_capture (self.tracks[i].center_trace[j+1],self.tracks[i].img_trace[j+1])
-                    MyHive.add_bee(NewBee)
+#                    NewBee=Bee(self.tracks[i].center_trace[0],self.tracks[i].img_trace[0])
+#                    if len (self.tracks[i].center_trace)>1:
+#                        for j in range(len(self.tracks[i].center_trace)-1):
+#                            NewBee.add_capture (self.tracks[i].center_trace[j+1],self.tracks[i].img_trace[j+1])
+                    MyHive.add_bee(self.tracks[i].NewBee)
 
                 pass
             else:
@@ -147,11 +149,13 @@ class Tracker(object):
         for i in range(len(self.tracks)):
             if (self.tracks[i].skipped_frames > self.max_frames_to_skip):
                 del_tracks.append(i)
-                NewBee=Bee(self.tracks[i].center_trace[0],self.tracks[i].img_trace[0])
-                if len (self.tracks[i].center_trace)>0:
-                    for j in range(len(self.tracks[i].center_trace)):
-                        NewBee.add_capture (self.tracks[i].center_trace[j+1],self.tracks[i].img_trace[j+1])
-                MyHive.add_bee(NewBee)
+                
+#                NewBee=Bee(self.tracks[i].center_trace[0],self.tracks[i].img_trace[0])
+#                cv.imshow("bees", np.array(NewBee.frame))
+#                if len (self.tracks[i].center_trace)>1:
+#                    for j in range(len(self.tracks[i].center_trace)-1):
+#                        NewBee.add_capture (self.tracks[i].center_trace[j+1],self.tracks[i].img_trace[j+1])
+                MyHive.add_bee(self.tracks[i].NewBee)
                                 
         if len(del_tracks) > 0:  # only when skipped frame exceeds max
             for id in del_tracks:
@@ -176,12 +180,18 @@ class Tracker(object):
                 self.trackIdCount += 1
                 self.tracks.append(track)
                 #print (self.trackIdCount)
+                
 
         # Update KalmanFilter state, lastResults and tracks trace
         for i in range(len(assignment)):
+ 
             self.tracks[i].KF.predict()
-
+            
             if(assignment[i] != -1):
+                if self.tracks[i].first == 1:
+                    self.tracks[i].first=0
+                else :
+                    self.tracks[i].NewBee.add_capture(np.copy(detection_centers[assignment[i]]),np.copy(detection_imgs[assignment[i]]))
                 self.tracks[i].skipped_frames = 0
                 self.tracks[i].prediction = self.tracks[i].KF.correct(
                                             detection_centers[assignment[i]], 1)
@@ -189,11 +199,9 @@ class Tracker(object):
                 self.tracks[i].prediction = self.tracks[i].KF.correct(
                                             np.array([[0], [0]]), 0)
 
-            if(len(self.tracks[i].center_trace) > self.max_trace_length):
-                for j in range(len(self.tracks[i].center_trace) -
+            if(len(self.tracks[i].NewBee.center) > self.max_trace_length):
+                for j in range(len(self.tracks[i].NewBee.center) -
                                self.max_trace_length):
-                    del self.tracks[i].center_trace[j]
+                    del self.tracks[i].NewBee.center[j]
 
-            self.tracks[i].center_trace.append(self.tracks[i].prediction)
-            self.tracks[i].img_trace.append(self.tracks[i].img)
             self.tracks[i].KF.lastResult = self.tracks[i].prediction
