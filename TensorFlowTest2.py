@@ -18,8 +18,8 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 
-train_dir = 'C:/Users/js235785/Documents/GitHub/BeeDetectionData/BeesImages/TFDataset/train'
-validation_dir = 'C:/Users/js235785/Documents/GitHub/BeeDetectionData/BeesImages/TFDataset/test'
+train_dir = 'C:/Users/js235785/Documents/GitHub/BeeDetectionData/BeesImages/PollenTFDataset/train'
+validation_dir = 'C:/Users/js235785/Documents/GitHub/BeeDetectionData/BeesImages/PollenTFDataset/test'
 
 
 train_with_dir = os.path.join(train_dir, 'with') 
@@ -36,8 +36,6 @@ num_without_val = len(os.listdir(validation_without_dir))
 
 total_train = num_with_tr + num_without_tr
 total_val = num_with_val + num_without_val
-
-print (total_train, total_val)
 
 batch_size = 128
 epochs = 15
@@ -124,3 +122,5 @@ plt.plot(epochs_range, val_loss, label='Validation Loss')
 plt.legend(loc='upper right')
 plt.title('Training and Validation Loss')
 plt.show()
+
+
