@@ -21,8 +21,8 @@ if __name__ == "__main__":
 
     #videopath="video/GOPR3332.MP4"
     #videoname="GOPR3332"
-    videopath="../BeeDetectionData/video/GOPR3330.MP4"
-    videoname="GOPR3330"
+    videopath="../BeeDetectionData/video/VID_20191026_154626.mp4"
+    videoname="VID_20191026_154626"
     
     beesimgpath='../BeeDetectionData/BeesImages/'+videoname+'/'
     paramsavepath='video/'+videoname+'.txt'

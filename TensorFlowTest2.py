@@ -6,6 +6,9 @@ Created on Thu Oct 31 11:04:21 2019
 """
 
 # https://www.tensorflow.org/tutorials/images/classification
+# https://www.kaggle.com/ivanfel/honey-bee-pollen
+# https://www.kaggle.com/jenny18/honey-bee-annotated-images/data
+
 
 
 from __future__ import absolute_import, division, print_function, unicode_literals
@@ -18,8 +21,13 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 
-train_dir = 'C:/Users/js235785/Documents/GitHub/BeeDetectionData/BeesImages/PollenTFDataset/train'
-validation_dir = 'C:/Users/js235785/Documents/GitHub/BeeDetectionData/BeesImages/PollenTFDataset/test'
+#train_dir = 'C:/Users/js235785/Documents/GitHub/BeeDetectionData/BeesImages/PollenTFDataset/train'
+#validation_dir = 'C:/Users/js235785/Documents/GitHub/BeeDetectionData/BeesImages/PollenTFDataset/test'
+
+train_dir = 'C:/Users/rastafouille/Pictures/PollenTFDataset/train'
+validation_dir = 'C:/Users/rastafouille/Pictures/PollenTFDataset/test'
+
+
 
 
 train_with_dir = os.path.join(train_dir, 'with') 
@@ -38,7 +46,7 @@ total_train = num_with_tr + num_without_tr
 total_val = num_with_val + num_without_val
 
 batch_size = 128
-epochs = 15
+epochs = 1
 IMG_HEIGHT = 100
 IMG_WIDTH = 100
 
