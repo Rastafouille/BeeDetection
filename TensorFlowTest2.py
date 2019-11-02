@@ -24,8 +24,8 @@ import matplotlib.pyplot as plt
 #train_dir = 'C:/Users/js235785/Documents/GitHub/BeeDetectionData/BeesImages/PollenTFDataset/train'
 #validation_dir = 'C:/Users/js235785/Documents/GitHub/BeeDetectionData/BeesImages/PollenTFDataset/test'
 
-train_dir = 'C:/Users/rastafouille/Pictures/PollenTFDataset/train'
-validation_dir = 'C:/Users/rastafouille/Pictures/PollenTFDataset/test'
+train_dir = 'C:/Users/rastafouille/Documents/GitHub/PollenDataSet/train'
+validation_dir = 'C:/Users/rastafouille/Documents/GitHub/PollenDataSet/test'
 
 
 
