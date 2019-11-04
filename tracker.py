@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Oct 25 12:18:34 2019
+
+@author: JS235785
+"""
+
 '''
     File name         : tracker.py
     File Description  : Tracker Using Kalman Filter & Hungarian Algorithm
@@ -12,7 +19,8 @@ import numpy as np
 from kalman_filter import KalmanFilter
 from common import dprint
 from scipy.optimize import linear_sum_assignment
-
+from api import Bee,Hive
+import cv2 as cv
 
 class Track(object):
     """Track class for every object to be tracked
@@ -20,7 +28,7 @@ class Track(object):
         None
     """
 
-    def __init__(self, prediction, trackIdCount):
+    def __init__(self, prediction,img, trackIdCount):
         """Initialize variables used by Track class
         Args:
             prediction: predicted centroids of object to be tracked
@@ -30,9 +38,13 @@ class Track(object):
         """
         self.track_id = trackIdCount  # identification of each track object
         self.KF = KalmanFilter()  # KF instance to track this object
-        self.prediction = np.asarray(prediction)  # predicted centroids (x,y)
+        self.prediction = prediction  # predicted centroids (x,y)
         self.skipped_frames = 0  # number of frames skipped undetected
-        self.trace = []  # trace path
+        #self.center_trace = list() # trace path
+        #self.img_trace =list() 
+        self.img=img
+        self.NewBee=Bee(self.prediction, self.img)
+        self.first=1
 
 
 class Tracker(object):
@@ -60,7 +72,7 @@ class Tracker(object):
         self.tracks = []
         self.trackIdCount = trackIdCount
 
-    def update(self, detections):
+    def update(self, detection_centers,detection_imgs,MyHive):
         """Update tracks vector using following steps:
             - Create tracks if no tracks vector found
             - Calculate cost using sum of square distance
@@ -81,20 +93,20 @@ class Tracker(object):
 
         # Create tracks if no tracks vector found
         if (len(self.tracks) == 0):
-            for i in range(len(detections)):
-                track = Track(detections[i], self.trackIdCount)
+            for i in range(len(detection_centers)):
+                track = Track(detection_centers[i],detection_imgs[i], self.trackIdCount)
                 self.trackIdCount += 1
                 self.tracks.append(track)
 
         # Calculate cost using sum of square distance between
         # predicted vs detected centroids
         N = len(self.tracks)
-        M = len(detections)
+        M = len(detection_centers)
         cost = np.zeros(shape=(N, M))   # Cost matrix
         for i in range(len(self.tracks)):
-            for j in range(len(detections)):
+            for j in range(len(detection_centers)):
                 try:
-                    diff = self.tracks[i].prediction - detections[j]
+                    diff = self.tracks[i].prediction - detection_centers[j]
                     distance = np.sqrt(diff[0][0]*diff[0][0] +
                                        diff[1][0]*diff[1][0])
                     cost[i][j] = distance
@@ -117,10 +129,17 @@ class Tracker(object):
         for i in range(len(assignment)):
             if (assignment[i] != -1):
                 # check for cost distance threshold.
-                # If cost is very high then un_assign (delete) the track
+                # If cost is very high then un_assign (delete) the track 
                 if (cost[i][assignment[i]] > self.dist_thresh):
                     assignment[i] = -1
                     un_assigned_tracks.append(i)
+                    
+#                    NewBee=Bee(self.tracks[i].center_trace[0],self.tracks[i].img_trace[0])
+#                    if len (self.tracks[i].center_trace)>1:
+#                        for j in range(len(self.tracks[i].center_trace)-1):
+#                            NewBee.add_capture (self.tracks[i].center_trace[j+1],self.tracks[i].img_trace[j+1])
+                    #MyHive.add_bee(self.tracks[i].NewBee)
+                    #print ('bee '+str(self.tracks[i].track_id)+' via 1')
                 pass
             else:
                 self.tracks[i].skipped_frames += 1
@@ -130,9 +149,18 @@ class Tracker(object):
         for i in range(len(self.tracks)):
             if (self.tracks[i].skipped_frames > self.max_frames_to_skip):
                 del_tracks.append(i)
+                
+#                NewBee=Bee(self.tracks[i].center_trace[0],self.tracks[i].img_trace[0])
+#                cv.imshow("bees", np.array(NewBee.frame))
+#                if len (self.tracks[i].center_trace)>1:
+#                    for j in range(len(self.tracks[i].center_trace)-1):
+#                        NewBee.add_capture (self.tracks[i].center_trace[j+1],self.tracks[i].img_trace[j+1])
+
+                                
         if len(del_tracks) > 0:  # only when skipped frame exceeds max
             for id in del_tracks:
                 if id < len(self.tracks):
+                    MyHive.add_bee(self.tracks[id].NewBee)
                     del self.tracks[id]
                     del assignment[id]
                 else:
@@ -140,35 +168,41 @@ class Tracker(object):
 
         # Now look for un_assigned detects
         un_assigned_detects = []
-        for i in range(len(detections)):
+        for i in range(len(detection_centers)):
                 if i not in assignment:
                     un_assigned_detects.append(i)
 
         # Start new tracks
         if(len(un_assigned_detects) != 0):
             for i in range(len(un_assigned_detects)):
-                track = Track(detections[un_assigned_detects[i]],
+                track = Track(detection_centers[un_assigned_detects[i]],
+                              detection_imgs[un_assigned_detects[i]],
                               self.trackIdCount)
                 self.trackIdCount += 1
                 self.tracks.append(track)
-                print (self.trackIdCount)
+                #print (self.trackIdCount)
+                
 
         # Update KalmanFilter state, lastResults and tracks trace
         for i in range(len(assignment)):
+ 
             self.tracks[i].KF.predict()
-
+            
             if(assignment[i] != -1):
+                if self.tracks[i].first == 1:
+                    self.tracks[i].first=0
+                else :
+                    self.tracks[i].NewBee.add_capture(detection_centers[assignment[i]],detection_imgs[assignment[i]])
                 self.tracks[i].skipped_frames = 0
                 self.tracks[i].prediction = self.tracks[i].KF.correct(
-                                            detections[assignment[i]], 1)
+                                            detection_centers[assignment[i]], 1)
             else:
                 self.tracks[i].prediction = self.tracks[i].KF.correct(
                                             np.array([[0], [0]]), 0)
 
-            if(len(self.tracks[i].trace) > self.max_trace_length):
-                for j in range(len(self.tracks[i].trace) -
+            if(len(self.tracks[i].NewBee.center) > self.max_trace_length):
+                for j in range(len(self.tracks[i].NewBee.center) -
                                self.max_trace_length):
-                    del self.tracks[i].trace[j]
+                    del self.tracks[i].NewBee.center[j]
 
-            self.tracks[i].trace.append(self.tracks[i].prediction)
             self.tracks[i].KF.lastResult = self.tracks[i].prediction

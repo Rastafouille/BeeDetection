@@ -16,16 +16,17 @@ import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Conv2D, Flatten, Dropout, MaxPooling2D
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
+import pandas as pd
 
 import os
 import numpy as np
 import matplotlib.pyplot as plt
 
-#train_dir = 'C:/Users/js235785/Documents/GitHub/BeeDetectionData/BeesImages/PollenTFDataset/train'
-#validation_dir = 'C:/Users/js235785/Documents/GitHub/BeeDetectionData/BeesImages/PollenTFDataset/test'
+train_dir = 'C:/Users/js235785/Documents/GitHub/PollenDataSet/train'
+validation_dir = 'C:/Users/js235785/Documents/GitHub/PollenDataSet/test'
 
-train_dir = 'C:/Users/rastafouille/Documents/GitHub/PollenDataSet/train'
-validation_dir = 'C:/Users/rastafouille/Documents/GitHub/PollenDataSet/test'
+#train_dir = 'C:/Users/rastafouille/Documents/GitHub/PollenDataSet/train'
+#validation_dir = 'C:/Users/rastafouille/Documents/GitHub/PollenDataSet/test'
 
 
 
@@ -37,10 +38,14 @@ validation_without_dir = os.path.join(validation_dir, 'without')
 
 
 num_with_tr = len(os.listdir(train_with_dir))
+print ('num_with_tr='+str(num_with_tr))
 num_without_tr = len(os.listdir(train_without_dir))
+print ('num_without_tr='+str(num_without_tr))
 
 num_with_val = len(os.listdir(validation_with_dir))
+print ('num_with_val='+str(num_with_val))
 num_without_val = len(os.listdir(validation_without_dir))
+print ('num_without_val='+str(num_without_val))
 
 total_train = num_with_tr + num_without_tr
 total_val = num_with_val + num_without_val
@@ -65,11 +70,11 @@ val_data_gen = validation_image_generator.flow_from_directory(batch_size=batch_s
                                                               target_size=(IMG_HEIGHT, IMG_WIDTH),
                                                               class_mode='binary')
 
-sample_training_images, _ = next(train_data_gen)
+sample_val_images, _ = next(val_data_gen)
 
 # This function will plot images in the form of a grid with 1 row and 5 columns where images are placed in each column.
 def plotImages(images_arr):
-    fig, axes = plt.subplots(1, 5, figsize=(20,20))
+    fig, axes = plt.subplots(1, 2, figsize=(10,10))
     axes = axes.flatten()
     for img, ax in zip( images_arr, axes):
         ax.imshow(img)
@@ -77,8 +82,9 @@ def plotImages(images_arr):
     plt.tight_layout()
     plt.show()
     
-plotImages(sample_training_images[:5])
-    
+#plotImages(sample_training_images[:5])
+
+
 
 model = Sequential([
     Conv2D(16, 3, padding='same', activation='relu', input_shape=(IMG_HEIGHT, IMG_WIDTH ,3)),
@@ -89,7 +95,7 @@ model = Sequential([
     MaxPooling2D(),
     Flatten(),
     Dense(512, activation='relu'),
-    Dense(1, activation='sigmoid')
+    Dense(1,activation='softmax')
 ])
     
     
@@ -130,5 +136,21 @@ plt.plot(epochs_range, val_loss, label='Validation Loss')
 plt.legend(loc='upper right')
 plt.title('Training and Validation Loss')
 plt.show()
+
+
+predictions = model.predict(sample_val_images)
+ 
+
+plt.figure(figsize=(10,80))
+for i in range(200):
+    plt.subplot(40,5,i+1)
+    plt.xticks([])
+    plt.yticks([])
+    plt.grid(False)
+    plt.imshow(sample_val_images[i], cmap=plt.cm.binary)
+    plt.xlabel(predictions[i])
+plt.show()
+
+
 
 
