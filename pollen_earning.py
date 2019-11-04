@@ -22,8 +22,8 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 
-train_dir = 'C:/Users/js235785/Documents/GitHub/PollenDataSet/train'
-validation_dir = 'C:/Users/js235785/Documents/GitHub/PollenDataSet/test'
+train_dir = 'C:/Users/js235785/Documents/GitHub/PollenDataSet2/train'
+validation_dir = 'C:/Users/js235785/Documents/GitHub/PollenDataSet2/test'
 
 #train_dir = 'C:/Users/rastafouille/Documents/GitHub/PollenDataSet/train'
 #validation_dir = 'C:/Users/rastafouille/Documents/GitHub/PollenDataSet/test'
@@ -51,12 +51,19 @@ total_train = num_with_tr + num_without_tr
 total_val = num_with_val + num_without_val
 
 batch_size = 128
-epochs = 1
+epochs = 50
 IMG_HEIGHT = 100
 IMG_WIDTH = 100
 
-train_image_generator = ImageDataGenerator(rescale=1./255) # Generator for our training data
-validation_image_generator = ImageDataGenerator(rescale=1./255) # Generator for our validation data
+train_image_generator = ImageDataGenerator(rescale=1./255,rotation_range=45,
+                    width_shift_range=.15,
+                    height_shift_range=.15,
+                    horizontal_flip=True,
+                    zoom_range=0.5) # Generator for our training data
+validation_image_generator = ImageDataGenerator(rescale=1./255,width_shift_range=.15,
+                    height_shift_range=.15,
+                    horizontal_flip=True,
+                    zoom_range=0.5) # Generator for our validation data
 
 
 train_data_gen = train_image_generator.flow_from_directory(batch_size=batch_size,
@@ -139,10 +146,9 @@ plt.show()
 
 
 predictions = model.predict(sample_val_images)
- 
-
+    
 plt.figure(figsize=(10,80))
-for i in range(200):
+for i in range(128):
     plt.subplot(40,5,i+1)
     plt.xticks([])
     plt.yticks([])
