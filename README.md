@@ -56,10 +56,15 @@ Il va falloir des images de meilleures qualité (augmenter la résolution et fé
 
 Apprentissage par reseau de neurones à convolution avec TensorFlow/keras. Le modéle est enregistré pour etre joué sur chacune des abeilles trackée.
 
+travail similaire :
+
+<https://www.researchgate.net/publication/324865343_Recognition_ofPollen-bearing_Bees_from_Video_using_ConvolutionalNeuralNetwork>
 
 Premier dataset : <https://github.com/piperod/PollenDataset>
 
 Dataset perso a refaire sur fond blanc au printemps :<https://github.com/Rastafouille/PollenDataSet> 
+
+Tester avec filtre d'extraction des couleur en amont.
 
 <img src="images/TF_summary.png" width="500"/>
 
