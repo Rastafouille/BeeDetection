@@ -50,14 +50,14 @@ print ('num_without_val='+str(num_without_val))
 total_train = num_with_tr + num_without_tr
 total_val = num_with_val + num_without_val
 
-batch_size = 50
-epochs = 100
+batch_size = 100
+epochs = 1000
 
 IMG_HEIGHT = 150
 IMG_WIDTH = 100
 
-train_image_generator = ImageDataGenerator(rescale=1./255)#,rotation_range=45,width_shift_range=.15,height_shift_range=.15,horizontal_flip=True,zoom_range=0.5) # Generator for our training data
-validation_image_generator = ImageDataGenerator(rescale=1./255)#,rotation_range=45,width_shift_range=.15,height_shift_range=.15,horizontal_flip=True,zoom_range=0.5) # Generator for our validation data
+train_image_generator = ImageDataGenerator(rescale=1./255,rotation_range=45,width_shift_range=.15,height_shift_range=.15,horizontal_flip=True,zoom_range=0.5) # Generator for our training data
+validation_image_generator = ImageDataGenerator(rescale=1./255,rotation_range=45,width_shift_range=.15,height_shift_range=.15,horizontal_flip=True,zoom_range=0.5) # Generator for our validation data
 
 
 train_data_gen = train_image_generator.flow_from_directory(batch_size=batch_size,
