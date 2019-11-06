@@ -57,7 +57,7 @@ IMG_HEIGHT = 150
 IMG_WIDTH = 100
 
 train_image_generator = ImageDataGenerator(rescale=1./255,rotation_range=45,horizontal_flip=True,zoom_range=0.5)#,height_shift_range=.15,width_shift_range=.15) # Generator for our training data
-validation_image_generator = ImageDataGenerator(rescale=1./255,rotation_range=45,horizontal_flip=True,zoom_range=0.5)#,height_shift_range=.15,width_shift_range=.15) # Generator for our validation data
+validation_image_generator = ImageDataGenerator(rescale=1./255)#,rotation_range=45,horizontal_flip=True,zoom_range=0.5)#,height_shift_range=.15,width_shift_range=.15) # Generator for our validation data
 
 
 train_data_gen = train_image_generator.flow_from_directory(batch_size=batch_size,
@@ -90,12 +90,12 @@ def plotImages(images_arr):
 model = Sequential([
     Conv2D(8, 3, padding='same', activation='relu', input_shape=(IMG_HEIGHT, IMG_WIDTH ,3)),
     MaxPooling2D(),
-    Dropout(0.4),
+    Dropout(0.3),
     Conv2D(16, 3, padding='same', activation='relu'),
     MaxPooling2D(),
     Conv2D(64, 3, padding='same', activation='relu'),
     MaxPooling2D(),
-    Dropout(0.4),
+    Dropout(0.3),
     Flatten(input_shape=(IMG_HEIGHT, IMG_WIDTH ,3)),
     Dense(512, activation='relu'),
     Dense(1,activation='sigmoid')
