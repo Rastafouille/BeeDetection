@@ -51,7 +51,7 @@ total_train = num_with_tr + num_without_tr
 total_val = num_with_val + num_without_val
 
 batch_size = 50
-epochs = 50
+epochs = 100
 
 IMG_HEIGHT = 150
 IMG_WIDTH = 100

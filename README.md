@@ -54,42 +54,7 @@ Premier dataset : <https://github.com/piperod/PollenDataset>
 Dataset perso a refaire sur fond blanc au printemps :<https://github.com/Rastafouille/PollenDataSet> 
 
 Caractéristique du réseau et dataset :
-
-num_with_tr=319
-num_without_tr=295
-num_with_val=50
-num_without_val=50
-Found 614 images belonging to 2 classes.
-Found 100 images belonging to 2 classes.
-Model: "sequential_15"
-_________________________________________________________________
-Layer (type)                 Output Shape              Param #   
-=================================================================
-conv2d_45 (Conv2D)           (None, 150, 100, 8)       224       
-_________________________________________________________________
-max_pooling2d_45 (MaxPooling (None, 75, 50, 8)         0         
-_________________________________________________________________
-dropout_2 (Dropout)          (None, 75, 50, 8)         0         
-_________________________________________________________________
-conv2d_46 (Conv2D)           (None, 75, 50, 16)        1168      
-_________________________________________________________________
-max_pooling2d_46 (MaxPooling (None, 37, 25, 16)        0         
-_________________________________________________________________
-conv2d_47 (Conv2D)           (None, 37, 25, 64)        9280      
-_________________________________________________________________
-max_pooling2d_47 (MaxPooling (None, 18, 12, 64)        0         
-_________________________________________________________________
-dropout_3 (Dropout)          (None, 18, 12, 64)        0         
-_________________________________________________________________
-flatten_15 (Flatten)         (None, 13824)             0         
-_________________________________________________________________
-dense_30 (Dense)             (None, 512)               7078400   
-_________________________________________________________________
-dense_31 (Dense)             (None, 1)                 513       
-=================================================================
-Total params: 7,089,585
-Trainable params: 7,089,585
-Non-trainable params: 0
+<img src="images/TF_summary.png" width="500"/>
 
 <img src="images/TF_bee_result.png" width="500"/>
 
