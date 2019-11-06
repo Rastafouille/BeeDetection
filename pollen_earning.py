@@ -50,20 +50,14 @@ print ('num_without_val='+str(num_without_val))
 total_train = num_with_tr + num_without_tr
 total_val = num_with_val + num_without_val
 
-batch_size = 128
+batch_size = 50
 epochs = 50
-IMG_HEIGHT = 100
+
+IMG_HEIGHT = 150
 IMG_WIDTH = 100
 
-train_image_generator = ImageDataGenerator(rescale=1./255,rotation_range=45,
-                    width_shift_range=.15,
-                    height_shift_range=.15,
-                    horizontal_flip=True,
-                    zoom_range=0.5) # Generator for our training data
-validation_image_generator = ImageDataGenerator(rescale=1./255,width_shift_range=.15,
-                    height_shift_range=.15,
-                    horizontal_flip=True,
-                    zoom_range=0.5) # Generator for our validation data
+train_image_generator = ImageDataGenerator(rescale=1./255)#,rotation_range=45,width_shift_range=.15,height_shift_range=.15,horizontal_flip=True,zoom_range=0.5) # Generator for our training data
+validation_image_generator = ImageDataGenerator(rescale=1./255)#,rotation_range=45,width_shift_range=.15,height_shift_range=.15,horizontal_flip=True,zoom_range=0.5) # Generator for our validation data
 
 
 train_data_gen = train_image_generator.flow_from_directory(batch_size=batch_size,
@@ -94,15 +88,17 @@ def plotImages(images_arr):
 
 
 model = Sequential([
-    Conv2D(16, 3, padding='same', activation='relu', input_shape=(IMG_HEIGHT, IMG_WIDTH ,3)),
+    Conv2D(8, 3, padding='same', activation='relu', input_shape=(IMG_HEIGHT, IMG_WIDTH ,3)),
     MaxPooling2D(),
-    Conv2D(32, 3, padding='same', activation='relu'),
+    Dropout(0.2),
+    Conv2D(16, 3, padding='same', activation='relu'),
     MaxPooling2D(),
     Conv2D(64, 3, padding='same', activation='relu'),
     MaxPooling2D(),
-    Flatten(),
+    Dropout(0.2),
+    Flatten(input_shape=(IMG_HEIGHT, IMG_WIDTH ,3)),
     Dense(512, activation='relu'),
-    Dense(1,activation='softmax')
+    Dense(1,activation='sigmoid')
 ])
     
     
@@ -112,7 +108,7 @@ model.compile(optimizer='adam',
 
 
 model.summary()
-    
+print('summary OK')
 history = model.fit_generator(
     train_data_gen,
     steps_per_epoch=total_train // batch_size,
@@ -120,7 +116,7 @@ history = model.fit_generator(
     validation_data=val_data_gen,
     validation_steps=total_val // batch_size
 )
-
+print('Fit OK')
 
 acc = history.history['accuracy']
 val_acc = history.history['val_accuracy']
@@ -148,7 +144,7 @@ plt.show()
 predictions = model.predict(sample_val_images)
     
 plt.figure(figsize=(10,80))
-for i in range(128):
+for i in range(batch_size):
     plt.subplot(40,5,i+1)
     plt.xticks([])
     plt.yticks([])
