@@ -40,7 +40,7 @@ Reprise du code sur : <https://github.com/srianant/kalman_filter_multi_object_tr
 
 <img src="images/tracking.png" width="500"/>
 
-<img src="images/tracking2.png" width="500"/>
+<img src="images/tracking2.jpg" width="500"/>
 
 - l'identification
 
@@ -50,10 +50,11 @@ Reprise du code sur : <https://github.com/srianant/kalman_filter_multi_object_tr
 - détection pollen
 
 Apprentissage par reseau de neurones à convolution avec TensorFlow/keras.
+
 Premier dataset : <https://github.com/piperod/PollenDataset>
+
 Dataset perso a refaire sur fond blanc au printemps :<https://github.com/Rastafouille/PollenDataSet> 
 
-Caractéristique du réseau et dataset :
 <img src="images/TF_summary.png" width="500"/>
 
 <img src="images/TF_bee_result.png" width="500"/>
