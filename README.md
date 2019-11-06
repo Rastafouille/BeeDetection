@@ -44,12 +44,18 @@ Reprise du code sur : <https://github.com/srianant/kalman_filter_multi_object_tr
 
 - l'identification
 
+Chaque image d'abeille trackée est enregistrée avec un id spécifique.
+
+<img src="images/Bee_id.png" width="500"/>
 
 - détection varroa
 
+Il va falloir des images de meilleures qualité (augmenter la résolution et féquence, améliorer la luminosité, faire marcher les abeilles via un tunnel?)
+
 - détection pollen
 
-Apprentissage par reseau de neurones à convolution avec TensorFlow/keras.
+Apprentissage par reseau de neurones à convolution avec TensorFlow/keras. Le modéle est enregistré pour etre joué sur chacune des abeilles trackée.
+
 
 Premier dataset : <https://github.com/piperod/PollenDataset>
 
@@ -61,10 +67,9 @@ Dataset perso a refaire sur fond blanc au printemps :<https://github.com/Rastafo
 
 <img src="images/TF_graph_result.png" width="500"/>
 
-
 - classification pollen
 
-
+A faire
 
 ## Installation dépendances pour Ubuntu 18.04
 
