@@ -57,7 +57,8 @@ class Detector1(object):
             final=cv.threshold(dilate,self.bin_const_2,255,cv.THRESH_BINARY)[1]
             dilate2 = cv.dilate(final, None, iterations=self.dil_const_2)
         
-        img_contour, contours_new, hierarchy = cv.findContours(dilate2,cv.RETR_TREE,cv.CHAIN_APPROX_SIMPLE)
+        # opencv 3  --> img_contour, contours_new, hierarchy = cv.findContours(dilate2,cv.RETR_TREE,cv.CHAIN_APPROX_SIMPLE)
+        contours_new, hierarchy = cv.findContours(dilate2,cv.RETR_TREE,cv.CHAIN_APPROX_SIMPLE)
         frame_contours=current
         cv.drawContours(frame_contours, contours_new, -1, (0,0,255), 2)
     

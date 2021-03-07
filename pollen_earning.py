@@ -22,11 +22,11 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 
-train_dir = 'C:/Users/js235785/Documents/GitHub/PollenDataSet2/train'
-validation_dir = 'C:/Users/js235785/Documents/GitHub/PollenDataSet2/test'
+#train_dir = 'C:/Users/js235785/Documents/GitHub/PollenDataSet2/train'
+#validation_dir = 'C:/Users/js235785/Documents/GitHub/PollenDataSet2/test'
 
-#train_dir = 'C:/Users/rastafouille/Documents/GitHub/PollenDataSet/train'
-#validation_dir = 'C:/Users/rastafouille/Documents/GitHub/PollenDataSet/test'
+train_dir = 'D:\GitHub\PollenDataSet/train'
+validation_dir = 'D:\GitHub\PollenDataSet/test'
 
 
 
