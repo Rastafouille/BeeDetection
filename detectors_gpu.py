@@ -51,10 +51,14 @@ class Detector1(object):
             gpu_previous_binary = cv.cuda.threshold(gpu_previous_gray,65,255,cv.THRESH_BINARY_INV)[1]
             gpu_gray = cv.cuda.cvtColor(gpu_current, cv.COLOR_BGR2GRAY) 
             gpu_binary = cv.cuda.threshold(gpu_gray,self.bin_const_1,255,cv.THRESH_BINARY)[1]
+            
             #gpu_addition0 = cv.cuda_GpuMat()
             #cv.cuda.add(gpu_binary,gpu_previous_binary,gpu_addition0)
             #gpu_addition=cv.cuda.threshold(gpu_addition0,127,255,cv.THRESH_BINARY_INV)[1]    
+            #BackgroundSubtractorFGD ???
+            
             gpu_gaussian = cv.cuda.GaussianBlur(gpu_binary, (21,21), 0)
+            
             gpu_dilate = cv.cuda.dilate(gpu_gaussian, None, iterations=self.dil_const_1)
             gpu_final=cv.cuda.threshold(gpu_dilate,self.bin_const_2,255,cv.THRESH_BINARY)[1]
             gpu_dilate2 = cv.cuda.dilate(gpu_final, None, iterations=self.dil_const_2)

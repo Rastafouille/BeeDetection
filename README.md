@@ -102,12 +102,17 @@ A faire
 
 `python -m pip install --user numpy scipy matplotlib ipython jupyter pandas sympy nose`
 
-tensorflow
 
 
-OpenCV en GPU CUDA
+
+OpenCV en GPU CUDA - Windows
 creer un env anaconda, installer numpy uniquement
 suivre le tuto https://haroonshakeel.medium.com/build-opencv-4-4-0-with-cuda-gpu-support-on-windows-10-without-tears-aa85d470bcd0
 attention a mettre les liens de python3 et numpy de l'environnement anaconda dans le Cmake
 
+tensorflow gpu - windows
+installer tensorflow gpu
 
+probleme possible :
+https://github.com/tensorflow/tensorflow/issues/40683
+https://stackoverflow.com/questions/65608713/tensorflow-gpu-could-not-load-dynamic-library-cusolver64-10-dll-dlerror-cuso

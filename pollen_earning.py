@@ -21,12 +21,13 @@ import pandas as pd
 import os
 import numpy as np
 import matplotlib.pyplot as plt
+from PIL import Image
 
 #train_dir = 'C:/Users/js235785/Documents/GitHub/PollenDataSet2/train'
 #validation_dir = 'C:/Users/js235785/Documents/GitHub/PollenDataSet2/test'
 
-train_dir = 'D:\GitHub\PollenDataSet/train'
-validation_dir = 'D:\GitHub\PollenDataSet/test'
+train_dir = 'D:\GitHub\PollenDataSet/Train'
+validation_dir = 'D:\GitHub\PollenDataSet/Test'
 
 
 
@@ -51,7 +52,7 @@ total_train = num_with_tr + num_without_tr
 total_val = num_with_val + num_without_val
 
 batch_size = 100
-epochs = 1000
+epochs = 100
 
 IMG_HEIGHT = 150
 IMG_WIDTH = 100

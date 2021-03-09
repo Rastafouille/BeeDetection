@@ -10,6 +10,11 @@ Created on Tue Oct 22 15:06:30 2019
 #https://github.com/srianant/kalman_filter_multi_object_tracking
 #https://github.com/anandsinghkunwar/pedestrian-counter
 
+
+
+https://learnopencv.com/getting-started-opencv-cuda-module/
+
+
 import cv2 as cv
 from detectors_gpu import Detector1,Detector2
 from api import Bee,Hive
