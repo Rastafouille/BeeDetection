@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Tue Oct 22 15:06:30 2019
-
 @author: JS235785
 """
 
@@ -12,7 +11,7 @@ Created on Tue Oct 22 15:06:30 2019
 #https://github.com/anandsinghkunwar/pedestrian-counter
 
 import cv2 as cv
-from detectors import Detector1,Detector2
+from detectors_gpu import Detector1,Detector2
 from api import Bee,Hive
 from tracker import Tracker
 import numpy as np
@@ -51,6 +50,7 @@ if __name__ == "__main__":
     # Création de la fenetre de detection et prise 1ere image
     cv.namedWindow("detection", cv.WINDOW_NORMAL)
     ok, frame = cap.read()
+
     
     if not ok:
         print('Failed to read video')
@@ -58,12 +58,17 @@ if __name__ == "__main__":
     # Select ROI
     r = cv.selectROI("detection",frame)
     cv.destroyWindow("detection")
+    
     # Crop image
     cropped = frame[int(r[1]):int(r[1]+r[3]), int(r[0]):int(r[0]+r[2])]
 
+    gpu_cropped = cv.cuda_GpuMat()
+    gpu_cropped.upload(cropped)
+
     # Create Object detector
     if num_detector==1:
-        previous_frame=cropped
+        gpu_previous_frame=cv.cuda_GpuMat()
+        gpu_previous_frame=gpu_cropped
         MyDetector = Detector1(65,15,150,8,DEBUG)
     else :
         MyDetector = Detector2()
@@ -94,12 +99,16 @@ if __name__ == "__main__":
             centers = []
             imgs = []
             rect = []
-            cropped=np.copy(frame[int(r[1]):int(r[1]+r[3]), int(r[0]):int(r[0]+r[2])] )
+            cropped = frame[int(r[1]):int(r[1]+r[3]), int(r[0]):int(r[0]+r[2])]
+            gpu_cropped.upload(cropped)
             # Detect and return centeroids of the objects in the frame
+            gpu_frame2 = cv.cuda_GpuMat()
             if num_detector==1:
-                centers,frame2,rect = MyDetector.detect(cropped,previous_frame)
+                centers,gpu_frame2,rect = MyDetector.detect(gpu_cropped,gpu_previous_frame)
+                frame2 = gpu_frame2.download()
                 #cv.imshow("bee", cropped)
-                previous_frame=np.copy(cropped)    
+                #previous_frame=np.copy(cropped) 
+                gpu_previous_frame=gpu_cropped
                 for i in range(len(centers)):
                     imgs.append(cropped[int(rect[i][1]):int(rect[i][1]+rect[i][3]),int(rect[i][0]):int(rect[i][0]+rect[i][2])])
                                         
@@ -156,10 +165,4 @@ if __name__ == "__main__":
     MyHive.save(beesimgpath)
     cap.release()
     cv.destroyAllWindows()
-    
-    
-    
-    
-    
-    
     
