@@ -75,6 +75,8 @@ val_data_gen = validation_image_generator.flow_from_directory(batch_size=batch_s
 
 sample_val_images, _ = next(val_data_gen)
 
+print ('test1')
+
 # This function will plot images in the form of a grid with 1 row and 5 columns where images are placed in each column.
 def plotImages(images_arr):
     fig, axes = plt.subplots(1, 2, figsize=(10,10))
@@ -87,7 +89,7 @@ def plotImages(images_arr):
     
 #plotImages(sample_training_images[:5])
 
-
+print ('test10')
 
 model = Sequential([
     Conv2D(8, 3, padding='same', activation='relu', input_shape=(IMG_HEIGHT, IMG_WIDTH ,3)),
@@ -103,12 +105,12 @@ model = Sequential([
     Dense(1,activation='sigmoid')
 ])
     
-    
+print ('test2')
 model.compile(optimizer='adam',
               loss='binary_crossentropy',
               metrics=['accuracy'])
 
-
+print ('test3')
 model.summary()
 print('summary OK')
 history = model.fit_generator(
