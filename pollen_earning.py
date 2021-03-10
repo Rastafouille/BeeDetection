@@ -22,8 +22,12 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 
-train_dir = 'C:/Users/js235785/Documents/GitHub/PollenDataSet2/train'
-validation_dir = 'C:/Users/js235785/Documents/GitHub/PollenDataSet2/test'
+train_dir = 'C:/Users/js235785/Documents/GitHub/dataset/train'
+validation_dir = 'C:/Users/js235785/Documents/GitHub/dataset/test'
+
+
+#train_dir = 'C:/Users/js235785/Documents/GitHub/PollenDataSet2/train'
+#validation_dir = 'C:/Users/js235785/Documents/GitHub/PollenDataSet2/test'
 
 #train_dir = 'C:/Users/rastafouille/Documents/GitHub/PollenDataSet/train'
 #validation_dir = 'C:/Users/rastafouille/Documents/GitHub/PollenDataSet/test'
@@ -51,7 +55,7 @@ total_train = num_with_tr + num_without_tr
 total_val = num_with_val + num_without_val
 
 batch_size = 100
-epochs = 1000
+epochs = 100
 
 IMG_HEIGHT = 150
 IMG_WIDTH = 100
