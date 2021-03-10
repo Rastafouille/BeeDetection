@@ -26,14 +26,17 @@ if __name__ == "__main__":
 
     #videopath="video/GOPR3332.MP4"
     #videoname="GOPR3332"
-    videopath="../BeeDetectionData/video/2020-03.1 coupe.mp4"
-    videoname="2020-03.1 coupe"
+    videopath="../BeeDetectionData/video/VID_20191026_154626.mp4"
+    videoname="VID_20191026_154626"
     
     beesimgpath='../BeeDetectionData/BeesImages/'+videoname+'/'
     paramsavepath='video/'+videoname+'.txt'
     
         
     cap = cv.VideoCapture(videopath)
+    cap.set(cv.CAP_PROP_FPS, 30)
+    #cap.set(cv.CAP_PROP_FRAME_WIDTH, 800)
+    #cap.set(cv.CAP_PROP_FRAME_HEIGHT, 700)
     #variable de mise en pause sur touche "p"
     fps = cap.get(cv.CAP_PROP_FPS)      # OpenCV2 version 2 used "CV_CAP_PROP_FPS"
     frame_count = int(cap.get(cv.CAP_PROP_FRAME_COUNT))
@@ -50,8 +53,8 @@ if __name__ == "__main__":
     
     cv.namedWindow("detection", cv.WINDOW_NORMAL)
     ok, frame = cap.read()
-    gpu_frame = cv.cuda_GpuMat()
-    gpu_frame.upload(frame)
+    #gpu_frame = cv.cuda_GpuMat()
+    #gpu_frame.upload(frame)
 
     
     if not ok:
@@ -59,19 +62,16 @@ if __name__ == "__main__":
         exit()
    
     
-  
-    
-    
-
     start_time=time.time()
+    start_time0=time.time()
     frame_number=0
     while(True):
        
         if playVideo:
             # Capture frame-by-frame
             ok,frame = cap.read()
-            gpu_frame = cv.cuda_GpuMat()
-            gpu_frame.upload(frame)
+            #gpu_frame = cv.cuda_GpuMat()
+            #gpu_frame.upload(frame)
             frame_number+=1
            
             if not ok:
@@ -79,16 +79,16 @@ if __name__ == "__main__":
                 break
             
             # Display the resulting tracking frame
-            cv.cuda.putText(gpu_frame, 'FPS:'+str(np.round(1/(time.time()-start_time),1)), (2,36), font, 0.8, (0, 255, 0), 1, 8)
+            cv.putText(frame, 'FPS:'+str(np.round(1/(time.time()-start_time),1)), (2,36), font, 0.8, (0, 255, 0), 1, 8)
             start_time=time.time()
-            cv.cuda.putText(gpu_frame, str(np.round(frame_number/fps,1))+'/'+str(np.round(duration,1))+' sec', (2,24), font, 0.8, (0, 255, 0), 1, 8)
+            cv.putText(frame, str(np.round(frame_number/fps,1))+'/'+str(np.round(duration,1))+' sec', (2,24), font, 0.8, (0, 255, 0), 1, 8)
                   
-            cv.imshow("detection",gpu_frame)
+            cv.imshow("detection",frame)
             
-                                     
-                             
-             
-        k = cv.waitKey(50);
+                                                                
+
+        
+        k = cv.waitKey(1);
         if k == 27: #ascii ESC
             break
         if k == 112: #ascii p
@@ -96,6 +96,8 @@ if __name__ == "__main__":
         if k == 115: #ascii s
             print('param well saved')
         
+    print('fps global = ' + str( np.round(frame_count/(time.time()-start_time0),1) ) )  
+
 
     cap.release()
     cv.destroyAllWindows()

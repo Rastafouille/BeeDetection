@@ -24,8 +24,8 @@ if __name__ == "__main__":
 
     #videopath="video/GOPR3332.MP4"
     #videoname="GOPR3332"
-    videopath="../BeeDetectionData/video/2020-03.1 coupe.mp4"
-    videoname="2020-03.1 coupe"
+    videopath="../BeeDetectionData/video/VID_20191026_154626.mp4"
+    videoname="VID_20191026_154626"
     
     beesimgpath='../BeeDetectionData/BeesImages/'+videoname+'/'
     paramsavepath='video/'+videoname+'.txt'
@@ -80,6 +80,7 @@ if __name__ == "__main__":
                     (127, 0, 255), (127, 0, 127)]
 
     start_time=time.time()
+    start_time0=time.time()
     frame_number=0
     while(True):
        
@@ -143,7 +144,7 @@ if __name__ == "__main__":
             cv.imshow('tracking', frame2)
                     
              
-        k = cv.waitKey(50);
+        k = cv.waitKey(5);
         if k == 27: #ascii ESC
             MyHive.save(beesimgpath)
             break
@@ -153,6 +154,7 @@ if __name__ == "__main__":
             MyDetector.save_param(videopath,paramsavepath)
             print('param well saved')
         
+    print('fps global = ' + str( np.round(frame_count/(time.time()-start_time0),1) ) )  
     MyHive.save(beesimgpath)
     cap.release()
     cv.destroyAllWindows()

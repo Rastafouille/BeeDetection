@@ -28,8 +28,8 @@ from PIL import Image
 #train_dir = 'C:/Users/js235785/Documents/GitHub/PollenDataSet2/train'
 #validation_dir = 'C:/Users/js235785/Documents/GitHub/PollenDataSet2/test'
 
-train_dir = 'D:\GitHub/BeeDetectionData/BeesImages/dataset/train'
-validation_dir = 'D:/GitHub/BeeDetectionData/BeesImages/dataset/test'
+train_dir = '../dataset/train'
+validation_dir = '../dataset/test'
 
 
 
