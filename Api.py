@@ -9,6 +9,7 @@ import cv2
 import os
 from kalman_filter import KalmanFilter
 import cv2 as cv
+import time
 
 class Bee(object):
     def __init__(self,firstcenter,firstframe):
@@ -29,6 +30,23 @@ class Bee(object):
         self.frame.append(np.copy(newframe))
         self.center.append(np.copy(newcenter))
         return
+    
+    def sup_bord(self,img_height,img_width):
+         sup=[]
+         for i in range(len(self.frame)):
+             if (self.center[i][0] + self.frame[i].shape[0] / 2 > img_height)  or (self.center[i][0] - self.frame[i].shape[0]/2 < 0)  or (self.center[i][1] + self.frame[i].shape[1]/2 > img_width) or (self.center[i][1] - self.frame[i].shape[1]/2 < 0) :
+                     cv.imshow("sup", self.frame[i])
+                     sup.append(i)
+                     time.sleep(1)
+                     
+         for i in range(len(sup)):
+             del self.frame[sup[len(sup)-i-1]]
+             del self.center[sup[len(sup)-i-1]]
+             print ('sup')
+        
+        
+        #height = img.shape[0]
+        #width = img.shape[1]
         
         
 class Hive(object):

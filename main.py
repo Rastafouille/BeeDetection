@@ -24,8 +24,8 @@ if __name__ == "__main__":
 
     #videopath="video/GOPR3332.MP4"
     #videoname="GOPR3332"
-    videopath="../BeeDetectionData/video/VID_20191026_154626.mp4"
-    videoname="VID_20191026_154626"
+    videopath="../BeeDetectionData/video/2020-04-25-4.mp4"
+    videoname="2020-04-25-4"
     
     beesimgpath='../BeeDetectionData/BeesImages/'+videoname+'/'
     paramsavepath='video/'+videoname+'.txt'
@@ -92,6 +92,7 @@ if __name__ == "__main__":
             if not ok:
                 print('Failed to read video')
                 break
+
             centers = []
             imgs = []
             rect = []
@@ -110,7 +111,9 @@ if __name__ == "__main__":
             
             #cv.imshow("detection",frame2)
             
-            
+            if num_detector==0:
+                frame2=cropped
+                
             # If centroids are detected then track them
             if (len(centers) > 0):
     
@@ -144,8 +147,13 @@ if __name__ == "__main__":
             cv.imshow('tracking', frame2)
                     
              
-        k = cv.waitKey(5);
+        k = cv.waitKey(2);
         if k == 27: #ascii ESC
+            for i in range(len(MyHive.bees)):
+                MyHive.bees[i].sup_bord(cropped.shape[0],cropped.shape[1])
+
+
+        
             MyHive.save(beesimgpath)
             break
         if k == 112: #ascii p
@@ -162,6 +170,7 @@ if __name__ == "__main__":
     
     
     
-    
+    #sans detecteur 80fps global
+    #detecteur 55fps global
     
     
